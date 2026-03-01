@@ -1,17 +1,19 @@
 import os
-import requests
 import random
 from typing import Optional
+
+import requests
+
 
 class ContentGenerator:
     """
     Generates marketing copy using AI or templates.
     """
-    
+
     def __init__(self, api_key: Optional[str] = None):
         self.api_key = api_key or os.environ.get("HF_API_TOKEN")
         self.api_url = "https://api-inference.huggingface.co/models/google/flan-t5-large"
-        
+
     def generate_ad_copy(self, destination: str, vibe: str = "exciting", platform: str = "Instagram") -> str:
         """
         Generate a short ad copy for a destination.
@@ -19,7 +21,7 @@ class ContentGenerator:
         if self.api_key:
             return self._generate_ai(destination, vibe, platform)
         return self._generate_template(destination, vibe, platform)
-        
+
     def _generate_template(self, destination: str, vibe: str, platform: str) -> str:
         templates = [
             f"{destination} is calling! Experience a {vibe} adventure filled with history and flavor. Book your dream trip today! ✈️ #{destination} #Travel",
@@ -27,7 +29,7 @@ class ContentGenerator:
             f"Escape to {destination}. It's simply {vibe}. Check our bio for deals! 🌴",
         ]
         return random.choice(templates)
-        
+
     def _generate_ai(self, destination: str, vibe: str, platform: str) -> str:
         prompt = f"Write a catchy {platform} marketing slogan for visiting {destination}. The vibe should be {vibe}."
         headers = {"Authorization": f"Bearer {self.api_key}"}
