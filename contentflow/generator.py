@@ -10,7 +10,6 @@ from typing import Optional
 
 import requests
 
-
 # ── Brand voice profiles ─────────────────────────────────────────────────────
 
 BRAND_VOICES = {
