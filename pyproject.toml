@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "contentflow"
-version = "0.4.0"
-description = "AI Marketing Content Generator"
+version = "1.0.0"
+description = "Multi-platform AI marketing content generator with calendar, SEO optimizer, brand voices, and multi-language support"
 readme = "README.md"
 authors = [
     { name = "Teyfik OZ", email = "teyfikoz@yahoo.com" }
 ]
 license = {text = "MIT"}
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

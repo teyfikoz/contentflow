@@ -1,9 +1,19 @@
 """
-ContentFlow - AI Marketing Content Generator
+ContentFlow v1.0.0 — Multi-platform AI marketing content generator.
 """
 
-__version__ = "0.4.0"
+__version__ = "1.0.0"
 
-from .generator import ContentGenerator
+from .generator import ContentGenerator, ContentScore
+from .calendar import ContentCalendar, ContentWeek, ScheduledPost
+from .seo import SEOOptimizer, MetaBundle
 
-__all__ = ["ContentGenerator"]
+__all__ = [
+    "ContentGenerator",
+    "ContentScore",
+    "ContentCalendar",
+    "ContentWeek",
+    "ScheduledPost",
+    "SEOOptimizer",
+    "MetaBundle",
+]
