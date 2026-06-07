@@ -1,11 +1,11 @@
-"""Tests for ContentFlow v1.0.0."""
+"""Tests for ContentFlow v1.1.0."""
 
 import pytest
 
 
 def test_version():
     import contentflow
-    assert contentflow.__version__ == "1.0.0"
+    assert contentflow.__version__ == "1.1.0"
 
 
 def test_all_exports():
@@ -144,3 +144,98 @@ def test_seo_generate_title_styles():
         title = seo.generate_title("Python testing", style=style)
         assert isinstance(title, str)
         assert "Python" in title
+
+
+# ── ContentScore __str__ ──────────��────────────────────────────────────────────
+
+def test_content_score_str():
+    from contentflow import ContentGenerator
+    gen = ContentGenerator()
+    content = gen.generate("AI tools", platform="instagram")
+    score = gen.score_content(content, platform="instagram")
+    s = str(score)
+    assert "ContentScore" in s
+    assert "readability" in s
+
+
+# ── generate() extra platforms ───���──────────────────────────────��──────────────
+
+def test_generate_sms_push():
+    from contentflow import ContentGenerator
+    gen = ContentGenerator()
+    for platform in ["sms", "push"]:
+        content = gen.generate("flash sale", platform=platform)
+        assert isinstance(content, str)
+        assert len(content) > 5
+
+
+# ── score_content edge cases ───────────────────────────────────��──────────────
+
+def test_score_content_all_platforms():
+    from contentflow import ContentGenerator
+    gen = ContentGenerator()
+    for platform in ["instagram", "linkedin", "twitter", "tiktok", "email", "blog"]:
+        content = gen.generate("news", platform=platform)
+        score = gen.score_content(content, platform=platform)
+        assert 0.0 <= score.overall <= 1.0
+
+
+def test_score_content_short_long():
+    from contentflow import ContentGenerator
+    gen = ContentGenerator()
+    score_short = gen.score_content("Hi!", platform="twitter")
+    score_long = gen.score_content("x " * 500, platform="twitter")
+    assert 0.0 <= score_short.length_fit <= 1.0
+    assert 0.0 <= score_long.length_fit <= 1.0
+
+
+# ── ContentCalendar __str__ ────────────────────��──────────────────────────────
+
+def test_scheduled_post_str():
+    from contentflow import ContentCalendar
+    cal = ContentCalendar()
+    week = cal.generate_week("cooking", platforms=["instagram"])
+    post = week.posts[0]
+    s = str(post)
+    assert "instagram" in s.lower() or "INSTAGRAM" in s
+
+
+# ── SEO meta unknown style ──────────────────────────────────────���─────────────
+
+def test_seo_generate_title_unknown_style():
+    from contentflow import SEOOptimizer
+    seo = SEOOptimizer()
+    title = seo.generate_title("python", style="unknown")
+    assert isinstance(title, str)
+
+
+# ── ContentWeek __repr__ ───────────────────────────────────────────────────────
+
+def test_content_week_repr():
+    from contentflow import ContentCalendar
+    cal = ContentCalendar()
+    week = cal.generate_week("travel", platforms=["instagram"])
+    r = repr(week)
+    assert "ContentWeek" in r
+
+
+# ── ContentGenerator language templates (non-en) ──────────────────────────────
+
+def test_generate_language_template_tr():
+    """Hit the language-template branch in _template_generate."""
+    from contentflow import ContentGenerator
+    gen = ContentGenerator(language="tr")
+    content = gen.generate("dijital pazarlama", platform="instagram")
+    assert isinstance(content, str)
+    assert len(content) > 5
+
+
+# ── _ai_generate fallback (bad API key) ───────────────────────────────────────
+
+def test_ai_generate_fallback_on_bad_key():
+    """_ai_generate falls back to template when API errors."""
+    from contentflow import ContentGenerator
+    gen = ContentGenerator(api_key="bad_test_key_xxx")
+    content = gen.generate("AI tools", platform="linkedin", tone="professional")
+    assert isinstance(content, str)
+    assert len(content) > 5

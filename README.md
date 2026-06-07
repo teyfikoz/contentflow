@@ -3,6 +3,7 @@
 **Multi-platform AI marketing content generator** — Instagram, LinkedIn, Twitter, TikTok, Email, Blog, SEO. Works offline with curated templates or online with HuggingFace AI.
 
 [![PyPI version](https://badge.fury.io/py/contentflow.svg)](https://pypi.org/project/contentflow/)
+[![Build](https://github.com/teyfikoz/contentflow/actions/workflows/publish.yml/badge.svg)](https://github.com/teyfikoz/contentflow/actions/workflows/publish.yml)
 [![CI](https://github.com/teyfikoz/contentflow/actions/workflows/ci.yml/badge.svg)](https://github.com/teyfikoz/contentflow/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
