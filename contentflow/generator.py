@@ -393,6 +393,77 @@ class ContentGenerator:
             overall=round(overall, 2),
         )
 
+    # ── A/B Variant Generator ─────────────────────────────────────────────────
+
+    def generate_ab_variants(
+        self,
+        topic: str,
+        platform: str = "instagram",
+        hashtag_category: str = "tech",
+    ) -> dict[str, str]:
+        """
+        Generate two A/B test content variants for the same topic.
+
+        Variant A uses a curiosity/question hook; Variant B uses a bold
+        statement/authority hook. Both are platform-optimised and scored.
+
+        Args:
+            topic: Main subject (e.g. "AI automation", "summer sale")
+            platform: Target platform (instagram/linkedin/twitter/tiktok/...)
+            hashtag_category: Hashtag category for both variants
+
+        Returns:
+            Dict with keys ``"variant_a"``, ``"variant_b"``, ``"scores"``:
+            ``{"variant_a": "...", "variant_b": "...", "scores": {"a": ContentScore, "b": ContentScore}}``
+
+        Example::
+
+            cg = ContentGenerator(brand_voice="startup")
+            result = cg.generate_ab_variants("AI automation", platform="linkedin")
+            print(result["variant_a"])
+            print(result["variant_b"])
+            print("Best:", "A" if result["scores"]["a"].overall >= result["scores"]["b"].overall else "B")
+        """
+        tags = random.sample(HASHTAG_SETS.get(hashtag_category, HASHTAG_SETS["tech"]), 3)
+        emoji = "🚀" if self.brand_voice["emoji"] else ""
+
+        # Variant A — curiosity / question hook
+        hook_a = f"What if {topic} could change how you work forever?"
+        body_a = f"Most people don't realise how powerful {topic} really is. Here's the truth:"
+
+        # Variant B — bold statement / authority hook
+        hook_b = f"{topic} just got a whole lot more interesting."
+        body_b = f"After months of research, here are the top 3 things you need to know about {topic}:"
+
+        platform_lc = platform.lower()
+        templates = PLATFORM_TEMPLATES.get(platform_lc, PLATFORM_TEMPLATES["instagram"])
+
+        # Use first template for A, second (or first again) for B
+        tpl_a = templates[0]
+        tpl_b = templates[1] if len(templates) > 1 else templates[0]
+
+        common = dict(
+            topic=topic, emoji=emoji,
+            tag1=tags[0], tag2=tags[1], tag3=tags[2] if len(tags) > 2 else tags[0],
+            point1=f"{topic} drives real ROI",
+            point2="Most competitors are already using it",
+            point3="You can start in under 10 minutes",
+            insight=f"{topic} is the new competitive edge",
+            name="there", cta=f"Try {topic} today", url="bit.ly/learn",
+        )
+
+        variant_a = tpl_a.format(hook=hook_a, body=body_a, **common)
+        variant_b = tpl_b.format(hook=hook_b, body=body_b, **common)
+
+        score_a = self.score_content(variant_a, platform_lc)
+        score_b = self.score_content(variant_b, platform_lc)
+
+        return {
+            "variant_a": variant_a,
+            "variant_b": variant_b,
+            "scores": {"a": score_a, "b": score_b},
+        }
+
     # ── Travel quotes (backward compat) ──────────────────────────────────────
 
     def get_travel_quote(self, category: str = "Adventure") -> str:

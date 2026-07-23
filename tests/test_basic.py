@@ -1,11 +1,11 @@
-"""Tests for ContentFlow v1.1.0."""
+"""Tests for ContentFlow v1.2.0."""
 
 import pytest
 
 
 def test_version():
     import contentflow
-    assert contentflow.__version__ == "1.1.0"
+    assert contentflow.__version__ == "1.2.0"
 
 
 def test_all_exports():
@@ -239,3 +239,32 @@ def test_ai_generate_fallback_on_bad_key():
     content = gen.generate("AI tools", platform="linkedin", tone="professional")
     assert isinstance(content, str)
     assert len(content) > 5
+
+
+# ── A/B Variant Generator ─────────────────────────────────────────────────────
+
+def test_generate_ab_variants_returns_two_variants():
+    from contentflow import ContentGenerator
+    cg = ContentGenerator(brand_voice="startup")
+    result = cg.generate_ab_variants("AI automation", platform="instagram", hashtag_category="tech")
+    assert "variant_a" in result
+    assert "variant_b" in result
+    assert "scores" in result
+    assert len(result["variant_a"]) > 10
+    assert len(result["variant_b"]) > 10
+
+
+def test_generate_ab_variants_scores():
+    from contentflow import ContentGenerator
+    cg = ContentGenerator(brand_voice="friendly")
+    result = cg.generate_ab_variants("startup growth", platform="linkedin")
+    scores = result["scores"]
+    assert 0.0 <= scores["a"].overall <= 1.0
+    assert 0.0 <= scores["b"].overall <= 1.0
+
+
+def test_generate_ab_variants_differ():
+    from contentflow import ContentGenerator
+    cg = ContentGenerator(brand_voice="minimal")
+    result = cg.generate_ab_variants("machine learning", platform="twitter")
+    assert result["variant_a"] != result["variant_b"]
